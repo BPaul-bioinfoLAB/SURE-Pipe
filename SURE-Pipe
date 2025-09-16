@@ -1,0 +1,53 @@
+#!/bin/bash
+set -euo pipefail
+
+# -------------------------------
+# Resolve repo path (follow symlink)
+# -------------------------------
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+PIPELINE_DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+
+# -------------------------------
+# Ensure Conda env is active
+# -------------------------------
+if [[ "${CONDA_DEFAULT_ENV:-}" != "SURE-Pipe" ]]; then
+    if command -v conda &>/dev/null; then
+        CONDA_BASE=$(conda info --base)
+        source "$CONDA_BASE/etc/profile.d/conda.sh"
+        conda activate SURE-Pipe
+    else
+        echo "❌ Conda is required. Please install Miniconda/Anaconda."
+        exit 1
+    fi
+fi
+
+# -------------------------------
+# CLI options
+# -------------------------------
+case "${1:-}" in
+    -h|--help)
+        nextflow run "${PIPELINE_DIR}/main.nf" --help
+        ;;
+    -V|--version)
+        nextflow run "${PIPELINE_DIR}/main.nf" --version
+        ;;
+    run)
+        shift
+        nextflow run "${PIPELINE_DIR}/main.nf" "$@"
+        ;;
+    *)
+        echo "Usage:"
+        echo "  SURE-Pipe run [options]    # Run the pipeline"
+        echo "  SURE-Pipe -h | --help      # Show Nextflow help"
+        echo "  SURE-Pipe -V | --version   # Show Nextflow version"
+        echo
+        echo "Tip: Use 'SURE-Pipe run --help' to see pipeline parameters."
+        exit 1
+        ;;
+esac
+

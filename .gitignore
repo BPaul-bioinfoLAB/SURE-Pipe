@@ -1,0 +1,17 @@
+# Nextflow cache
+.nextflow/
+
+# Nextflow work directories
+work/
+
+# Nextflow reports/logs
+results/
+pipeline_report.html
+pipeline_trace.txt
+pipeline_timeline.html
+pipeline_dag.png
+
+# Python / other environment files (optional)
+__pycache__/
+*.pyc
+.env

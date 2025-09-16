@@ -1,0 +1,15 @@
+name: SURE-Pipe
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python
+  - pandas
+  - bedtools
+  - blast
+  - biopython
+  - seqkit
+  - parallel
+  - samtools
+  - graphviz
+
