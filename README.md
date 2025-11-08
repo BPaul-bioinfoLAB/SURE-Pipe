@@ -1,3 +1,5 @@
+[![Downloads](https://img.shields.io/github/downloads/BPaul-bioinfoLAB/SURE-Pipe/total?logo=github)](https://github.com/BPaul-bioinfoLAB/SURE-Pipe/archive/refs/tags/v1.0.tar.gz)
+	
 	"""
 	============================================================================================================================================
 	.oOOOo.  O       o `OooOOo.  o.OOoOoo                       OooOOo.                 
