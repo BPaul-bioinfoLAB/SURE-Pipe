@@ -115,6 +115,7 @@ run_pairwise_blast() {
 
 export -f run_pairwise_blast
 export OUTPUT_DIR
+export core_genome_ident
 
 # Parallel execution: all queries x all subjects
 parallel -j "$THREADS" run_pairwise_blast "$target_ref" {} "$OUTPUT_DIR" ::: "${target_group[@]}"
