@@ -106,7 +106,7 @@ run_pairwise_blast() {
         -out "$blast_out" \
         -outfmt "6 qseqid sseqid pident length qstart qend sstart send qcovs qcovhsp"
 
-    awk -v cg_ident="$core_genome_ident" '($4 > 300 && $3 > cg_ident )' "$blast_out" > "$filtered_out"
+    awk -v cg_ident="$core_genome_ident" '($4 > 50 && $3 > cg_ident )' "$blast_out" > "$filtered_out"
 
     awk -v subj="$subject_basename" 'BEGIN {OFS="\t"} {print $1, ($5<=$6?$5:$6), ($5>=$6?$5:$6), subj}' "$filtered_out" \
         | sort -k1,1 -k2,2n > "$outdir/intra_first_blast/genome_bed/${subject_basename}.bed"
