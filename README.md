@@ -83,7 +83,7 @@ Create a global symlink for SURE-Pipe.
 
 ## 📌 Genome Architecture Compatibility
 
-SURE-Pipe is designed to flexibly handle diverse prokaryotic genome architectures and input formats:
+SURE-Pipe is designed to flexibly handle diverse genome architectures and input formats:
 
   🔹 Plasmids: Fully supported when included in the FASTA file. In our Bacillus case study, plasmids were excluded intentionally due to their frequent involvement in horizontal gene transfer (HGT), which   can confound species-level marker discovery. This reflects a biological choice, not a technical limitation.
 
