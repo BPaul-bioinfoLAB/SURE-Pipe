@@ -83,15 +83,15 @@ Create a global symlink for SURE-Pipe.
 
 ## 📌 Genome Architecture Compatibility
 
-    SURE-Pipe is designed to flexibly handle diverse prokaryotic genome architectures and input formats:
+SURE-Pipe is designed to flexibly handle diverse prokaryotic genome architectures and input formats:
 
-         Plasmids: Fully supported when included in the FASTA file. In our Bacillus case study, plasmids were excluded intentionally due to their frequent involvement in horizontal gene transfer (HGT), which   can confound species-level marker discovery. This reflects a biological choice, not a technical limitation.
+  -Plasmids: Fully supported when included in the FASTA file. In our Bacillus case study, plasmids were excluded intentionally due to their frequent involvement in horizontal gene transfer (HGT), which   can confound species-level marker discovery. This reflects a biological choice, not a technical limitation.
 
-         Multipartite genomes (e.g., multi-chromosome species): Supported without restriction. SURE-Pipe treats each chromosome or contig as an independent sequence within the same genome, and all region-based comparisons proceed normally.
+  -Multipartite genomes (e.g., multi-chromosome species): Supported without restriction. SURE-Pipe treats each chromosome or contig as an independent sequence within the same genome, and all region-based comparisons proceed normally.
 
-         Draft / fragmented assemblies: Draft genomes in multiFASTA format are supported. However, highly fragmented assemblies may lead to shorter or interrupted shared/unique regions due to contig boundaries—an inherent limitation of alignment-based analyses rather than a constraint of SURE-Pipe.
+  -Draft / fragmented assemblies: Draft genomes in multiFASTA format are supported. However, highly fragmented assemblies may lead to shorter or interrupted shared/unique regions due to contig boundaries—an inherent limitation of alignment-based analyses rather than a constraint of SURE-Pipe.
 
-         Input formats: Accepts common FASTA extensions (.fa, .fasta, .fna, .ffn, .frn). Each genome should be supplied as a separate FASTA file (single- or multi-FASTA), regardless of chromosome number or plasmid content.
+  -Input formats: Accepts common FASTA extensions (.fa, .fasta, .fna, .ffn, .frn). Each genome should be supplied as a separate FASTA file (single- or multi-FASTA), regardless of chromosome number or plasmid content.
 
 ## Project Directory structure
 	SURE-Pipe
