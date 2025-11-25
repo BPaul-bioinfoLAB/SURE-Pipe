@@ -65,6 +65,8 @@ workflow GENOME_ANALYSIS {
             accessory_unique
         )
         core_genome_file = INTRA_GENOME_MODULE.out.core_genome
+        accessory_genome_file = INTRA_GENOME_MODULE.out.accessory_genome
+        intra_unique_file = INTRA_GENOME_MODULE.out.intra_unique_genome
     } else {
         // Skip INTRA, use reference genome directly
         core_genome_file = channel_reference_genome
