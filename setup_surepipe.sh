@@ -16,6 +16,23 @@ NEXTFLOW_DIR="$HOME/bin"
 command_exists() {
     command -v "$1" &>/dev/null
 }
+fail() { echo "❌ $1"; exit 1; }
+# -------------------------------
+# Check Java version (must be >=17)
+# -------------------------------
+if command_exists java; then
+    JAVA_VER=$(java -version 2>&1 | awk -F[\".] '/version/ {print $2}')
+    if (( JAVA_VER < 17 )); then
+        fail "Java version < 17 detected. Install Java 17+ using SDKMAN:
+  sdk install java 17.0.10-tem"
+    fi
+    echo "☕ Java >=17 detected: $(java -version 2>&1 | head -n1)"
+else
+    fail "Java not installed. Install Java 17+ using:
+  curl -s https://get.sdkman.io | bash
+  sdk install java 17.0.10-tem"
+fi
+
 
 # -------------------------------
 # Conda/Mamba detection
