@@ -91,7 +91,7 @@ SURE-Pipe is designed to flexibly handle diverse genome architectures and input 
 
   🔹 Draft / fragmented assemblies: Draft genomes in multiFASTA format are supported. However, highly fragmented assemblies may lead to shorter or interrupted shared/unique regions due to contig boundaries—an inherent limitation of alignment-based analyses rather than a constraint of SURE-Pipe.
 
-  🔹 Input formats: Accepts common FASTA extensions (.fa, .fasta, .fna, .ffn, .frn). Each genome should be supplied as a separate FASTA file (single- or multi-FASTA), regardless of chromosome number or plasmid content.
+  🔹 Input formats: Accepts common FASTA extensions (.fa, .fasta, .fna, .ffn, .frn). Each genome should be supplied as a separate FASTA file (single- or multi-FASTA), regardless of chromosome number or plasmid content. Should keep the filenames without space instead use underscore(_)
 
 ## Project Directory structure
 	SURE-Pipe
