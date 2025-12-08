@@ -52,9 +52,9 @@ def main():
     parser.add_argument("-o", "--output_dir", default=".", help="Directory to save output files")
 
     # Unique region thresholds (will use inverse ops internally)
-    parser.add_argument("-uqc", "--unique_qcov", type=float, default=0, help="Query coverage % for Unique genomic region (default=0)")
+    parser.add_argument("-uqc", "--unique_qcov", type=float, default=0, help="Query coverage %% for Unique genomic region (default=0)")
     parser.add_argument("-uqc_op", "--unique_qcov_op", choices=ops.keys(), default=">", help="Operator for qcovs filter in unique regions (will be inverted)")
-    parser.add_argument("-uid", "--unique_ident", type=float, default=85.0, help="Identity % for Unique genomic region (default=85.0)")
+    parser.add_argument("-uid", "--unique_ident", type=float, default=85.0, help="Identity %% for Unique genomic region (default=85.0)")
     parser.add_argument("-uid_op", "--unique_ident_op", choices=ops.keys(), default=">", help="Operator for pident filter in unique regions (will be inverted)")
 
     # shared region thresholds (use as-is)
@@ -68,8 +68,8 @@ def main():
         parts = value.split(",")
         return [float(p) for p in parts]
 
-    parser.add_argument("-cqc", "--shared_qcov", type=parse_range, required=True, help="Query coverage % for shared genomic region (single or range, e.g. 80 or 80,95)")
-    parser.add_argument("-cid", "--shared_ident", type=parse_range, required=True, help="Identity % for shared genomic region (single or range, e.g. 90 or 90,100)")
+    parser.add_argument("-cqc", "--shared_qcov", type=parse_range, required=True, help="Query coverage %% for shared genomic region (single or range, e.g. 80 or 80,95)")
+    parser.add_argument("-cid", "--shared_ident", type=parse_range, required=True, help="Identity %% for shared genomic region (single or range, e.g. 90 or 90,100)")
 
     args = parser.parse_args()
     
