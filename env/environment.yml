@@ -2,14 +2,19 @@ name: SURE-Pipe
 channels:
   - conda-forge
   - bioconda
+  - defaults
 dependencies:
-  - python
-  - pandas
-  - bedtools
-  - blast
-  - biopython
-  - seqkit
-  - parallel
-  - samtools
-  - graphviz
+  # Core Python
+  - python=3.12.2
 
+  # Bioinformatics tools
+  - bedtools=2.31.1
+  - blast=2.17.0
+  - seqkit=2.10.1
+  - samtools=1.13
+  - graphviz=2.43.0
+  - parallel=20210822
+
+  # Python packages
+  - pandas      # Install this because your env is missing pandas
+  - biopython   # Install this because Bio was missing
