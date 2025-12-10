@@ -104,6 +104,29 @@ else
 fi
 
 # -------------------------------
+# Install Bash Autocompletion
+# -------------------------------
+echo "⚙️ Installing autocompletion..."
+
+mkdir -p ~/.bash_completion.d
+
+cp "${SCRIPT_DIR}/completion/surepipe.bash" ~/.bash_completion.d/SURE-Pipe
+
+if ! grep -q "~/.bash_completion.d" ~/.bashrc; then
+    echo '
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+fi
+
+for f in ~/.bash_completion.d/*; do
+    [ -f "$f" ] && source "$f"
+done
+' >> ~/.bashrc
+fi
+
+echo "✅ Autocompletion installed! Restart terminal or run: source ~/.bashrc"
+
+# -------------------------------
 # Done
 # -------------------------------
 echo "✅ Environment setup complete!"
