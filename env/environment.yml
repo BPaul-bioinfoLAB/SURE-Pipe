@@ -6,6 +6,7 @@ channels:
 dependencies:
   # Core Python
   - python
+  - openjdk=17
 
   # Bioinformatics tools
   - bedtools
