@@ -17,6 +17,24 @@ command_exists() {
     command -v "$1" &>/dev/null
 }
 fail() { echo "❌ $1"; exit 1; }
+
+# -------------------------------
+# Conda/Mamba detection
+# -------------------------------
+if ! command_exists conda; then
+    echo "❌ Conda is not installed. Please install Miniconda or Anaconda first."
+    exit 1
+fi
+
+CONDA_BASE=$(conda info --base)
+source "$CONDA_BASE/etc/profile.d/conda.sh"
+
+if command_exists mamba; then
+    CONDA_CMD="mamba"
+else
+    CONDA_CMD="conda"
+fi
+echo "Using $CONDA_CMD for environment management."
 # -------------------------------
 # Install Java 17 in BASE env (conda-forge, forced)
 # -------------------------------
@@ -51,25 +69,6 @@ if (( JAVA_VER < 17 )); then
 else
     echo "☕ Java 17 successfully installed: $(java -version 2>&1 | head -n1)"
 fi
-
-# -------------------------------
-# Conda/Mamba detection
-# -------------------------------
-if ! command_exists conda; then
-    echo "❌ Conda is not installed. Please install Miniconda or Anaconda first."
-    exit 1
-fi
-
-CONDA_BASE=$(conda info --base)
-source "$CONDA_BASE/etc/profile.d/conda.sh"
-
-if command_exists mamba; then
-    CONDA_CMD="mamba"
-else
-    CONDA_CMD="conda"
-fi
-echo "Using $CONDA_CMD for environment management."
-
 # -------------------------------
 # Install Nextflow if missing
 # -------------------------------
