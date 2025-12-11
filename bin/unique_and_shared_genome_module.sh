@@ -279,7 +279,7 @@ if [[ "$shared_region" == "yes" ]]; then
 	export -f process_genome
 
 	# Run in parallel (adjust -j for number of CPUs)
-	parallel -j 8 process_genome {} "$OUTPUT_DIR" ::: "${neighbour_group[@]}"
+	parallel -j "$THREADS" process_genome {} "$OUTPUT_DIR" ::: "${neighbour_group[@]}"
 
         
         # Count the number of chromosome BED files for this genome
