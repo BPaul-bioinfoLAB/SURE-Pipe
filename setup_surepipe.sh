@@ -18,21 +18,39 @@ command_exists() {
 }
 fail() { echo "❌ $1"; exit 1; }
 # -------------------------------
-# Check Java version (must be >=17)
+# Install Java 17 in BASE env (conda-forge, forced)
 # -------------------------------
-if command_exists java; then
-    JAVA_VER=$(java -version 2>&1 | awk -F[\".] '/version/ {print $2}')
-    if (( JAVA_VER < 17 )); then
-        fail "Java version < 17 detected. Install Java 17+ using SDKMAN:
-  sdk install java 17.0.10-tem"
-    fi
-    echo "☕ Java >=17 detected: $(java -version 2>&1 | head -n1)"
-else
-    fail "Java not installed. Install Java 17+ using:
-  curl -s https://get.sdkman.io | bash
-  sdk install java 17.0.10-tem"
+echo "🔍 Ensuring Java 17 is correctly installed via conda-forge..."
+
+# Add conda-forge with highest priority
+conda config --add channels conda-forge 2>/dev/null || true
+conda config --set channel_priority strict
+
+echo "☕ Forcing installation of Java 17 via conda-forge..."
+
+# Step 1: Try pulling openjdk=17
+$CONDA_CMD install -y -n base -c conda-forge "openjdk>=17" --force-reinstall
+
+# Step 2: Check Java version
+JAVA_VER=$(java -version 2>&1 | awk -F[\".] '/version/ {print $2}')
+
+if (( JAVA_VER < 17 )); then
+    echo "⚠️ Java is still < 17 — resolving environment conflicts..."
+
+    # Update all packages to allow Java 17 resolution
+    $CONDA_CMD update -y -n base --all
+
+    # Retry Java 17 installation
+    $CONDA_CMD install -y -n base -c conda-forge "openjdk>=17" --force-reinstall
+
+    JAVA_VER=$(java -version 2>&1 | awk -F[\".] '/version/ {print $2]')
 fi
 
+if (( JAVA_VER < 17 )); then
+    fail "Java installation failed → Java version remains below 17."
+else
+    echo "☕ Java 17 successfully installed: $(java -version 2>&1 | head -n1)"
+fi
 
 # -------------------------------
 # Conda/Mamba detection
