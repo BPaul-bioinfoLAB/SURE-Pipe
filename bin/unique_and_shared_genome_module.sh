@@ -141,7 +141,7 @@ export -f concat_bed_for_genome
 export OUTPUT_DIR
 parallel -j "$THREADS" concat_bed_for_genome ::: "${neighbour_group[@]}"
 
-# Step 3: Filter common and accessory regions
+# Step 3: Filter regions
 shopt -s nullglob  # makes *.bed expand to empty if no match
 bed_files=("$OUTPUT_DIR/intra_first_blast/genome_bed/*.bed")
 num_genomes=${#bed_files[@]}
@@ -181,8 +181,7 @@ else
     echo "Multiple genome BED file found ($num_genomes)."
     echo "Processing multiintersect analysis..."
     # Step 5: Perform bedtools multiintersect
-    ls "$OUTPUT_DIR"/inter_first_blast/genome_bed/*.bed > bedlist_unique.txt
-    bedtools multiinter -i $(cat bedlist_unique.txt)/*.bed > "$OUTPUT_DIR/inter_first_blast/core_genome_raw.bed"
+    bedtools multiinter -i "$OUTPUT_DIR"/inter_first_blast/genome_bed/*.bed > "$OUTPUT_DIR/inter_first_blast/core_genome_raw.bed"
     echo "The aligned regions intersection was completed"
 
     # Extract only the first three columns
@@ -302,8 +301,7 @@ if [[ "$shared_region" == "yes" ]]; then
         else
             echo "Multiple BED files found ($num_bed_files). Proceeding with further processing..."
             # Step 3: Perform bedtools multiintersect
-            ls "$OUTPUT_DIR"/inter_conserved_blast/genome_bed/*.bed > bedlist_shared.txt
-            bedtools multiinter -i $(cat bedlist_shared.txt)/*.bed -header > "$OUTPUT_DIR/inter_conserved_blast/conserved_regions_raw.bed"
+            bedtools multiinter -i "$OUTPUT_DIR"/inter_conserved_blast/genome_bed/*.bed -header > "$OUTPUT_DIR/inter_conserved_blast/conserved_regions_raw.bed"
             echo "The conserved regions intersection was completed"
 
             CONSRV_RAW="$OUTPUT_DIR/inter_conserved_blast/conserved_regions_raw.bed"
