@@ -35,8 +35,8 @@ params.unique_qcov_op = "<"
 params.unique_ident_op = "<"
 params.shared_qcov_op = ">"
 params.shared_ident_op = "<"
-params.min_seq_length = 50
-params.max_seq_length = 10000000
+params.min_seq_length = 0
+params.max_seq_length = 1000000000
 params.shared_qcov_mode = 'inside'
 params.shared_ident_mode = 'inside'
 params.accessory_unique = 'no'
@@ -83,7 +83,7 @@ def helpMessage() {
     Developed by Infant thomas S; Dr.Bobby paul 
     (For a commercial usage please contact : infantbiotech@gmail.com; bobby.paul@manipal.edu), Manipal School of Life Sciences, MAHE-Manipal,INDIA
     Usage:
-    nextflow run main.nf [options]
+    nextflow run [options]
 
     Required Options:
       --mode                    	Analysis mode: 'group' or 'pairwise' (default: $params.mode)
