@@ -102,7 +102,7 @@ SURE-Pipe is designed to flexibly handle diverse genome architectures and input 
 	│   ├── pairwise_comparison.sh
 	│   └── unique_and_shared_genome_module.sh
 	├── completion
-	│   ├── pairwise_comparison.sh
+	│   ├── surepipe.bash
 	├── data
 	│   ├── non_target
 	│   ├── pair
@@ -182,8 +182,8 @@ SURE-Pipe is designed to flexibly handle diverse genome architectures and input 
 	params.unique_ident_op = "<"
 	params.shared_qcov_op = ">"
 	params.shared_ident_op = "<"
-	params.min_seq_length = 50
-	params.max_seq_length = 10000000
+	params.min_seq_length = 0
+	params.max_seq_length = 1000000000
 	params.shared_qcov_mode = 'inside'
 	params.shared_ident_mode = 'inside'
 	params.accessory_unique = 'no'
