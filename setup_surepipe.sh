@@ -125,28 +125,40 @@ fi
 # -------------------------------
 echo "⚙️ Installing autocompletion..."
 
-mkdir -p ~/.bash_completion.d
+# Ensure bash-completion is available
+if ! command -v complete >/dev/null 2>&1; then
+    echo "⚠️ bash-completion not found. Please install it:"
+    echo "   sudo apt install bash-completion"
+else
+    mkdir -p ~/.bash_completion.d
 
-cp "${SCRIPT_DIR}/completion/surepipe.bash" ~/.bash_completion.d/SURE-Pipe
+    # Install completion file
+    cp "${SCRIPT_DIR}/completion/surepipe.bash" ~/.bash_completion.d/surepipe.bash
 
-if ! grep -q "~/.bash_completion.d" ~/.bashrc; then
-    echo '
+    # Ensure ~/.bash_completion.d is sourced
+    if ! grep -q "bash_completion.d" ~/.bashrc; then
+        cat >> ~/.bashrc <<'EOF'
+
+# Load user bash completions
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-for f in ~/.bash_completion.d/*; do
-    [ -f "$f" ] && source "$f"
-done
-' >> ~/.bashrc
+if [ -d "$HOME/.bash_completion.d" ]; then
+    for f in "$HOME/.bash_completion.d/"*; do
+        [ -f "$f" ] && source "$f"
+    done
 fi
+EOF
+    fi
 
-echo "✅ Autocompletion installed! Restart terminal or run: source ~/.bashrc"
+    # Source immediately for current session
+    if [ -f /etc/bash_completion ]; then
+        source /etc/bash_completion
+    fi
+    for f in ~/.bash_completion.d/*; do
+        [ -f "$f" ] && source "$f"
+    done
 
-# -------------------------------
-# Done
-# -------------------------------
-echo "✅ Environment setup complete!"
-echo "Activate it with: conda activate ${ENV_NAME}"
-echo "Run SURE-Pipe anywhere: SURE-Pipe <command>"
-
+    echo "✅ Autocompletion installed and activated"
+fi
