@@ -12,8 +12,8 @@ core_unique_out=""
 OUTPUT_DIR=""
 core_shared_genome=""
 unaligned_core_genome_bed=""
-MIN_SEQ_LENGTH=100
-MAX_SEQ_LENGTH=1000000
+MIN_SEQ_LENGTH=0
+MAX_SEQ_LENGTH=1000000000
 MIN_COUNT=0
 shared_region=yes
 THREADS=""
@@ -108,13 +108,13 @@ parallel -j "$THREADS" process_genome ::: "$core_genome_fasta" "${neighbour_grou
 echo "FAI & BED files generated for all genomes."
 
 # Step 2: Filter BLAST results (retain only columns 1, 2, 4, 5, 6, 7)
-awk '{print $1, $2, $4, $5, $6, $7, $8}' OFS="\t" "$core_unique_out" > "$OUTPUT_DIR/inter_first_blast/filtered_blast_results.csv"
+awk '{print $1, $2, $3, $4, $5, $6, $7, $8}' OFS="\t" "$core_unique_out" > "$OUTPUT_DIR/inter_first_blast/filtered_blast_results.csv"
 
 # Step 3: Create BED files for filtered results
 awk '{print $2}' "$OUTPUT_DIR/inter_first_blast/filtered_blast_results.csv" | sort | uniq | \
 parallel -j "$THREADS" '
   subject={} 
-  awk -v subj="$subject" "BEGIN {OFS=\"\t\"} (\$2==subj){print \$1, (\$5<\$6?\$5:\$6), (\$5>\$6?\$5:\$6)}" "'"$OUTPUT_DIR"'/inter_first_blast/filtered_blast_results.csv" | sort -k1,1 -k2,2n | bedtools merge -i - > "'"$OUTPUT_DIR"'/inter_first_blast/${subject}.bed"'
+  awk -v subj="$subject" "BEGIN {OFS=\"\t\"} (\$2==subj){print \$1, (\$5<\$6?\$5:\$6)-1, (\$5>\$6?\$5:\$6)}" "'"$OUTPUT_DIR"'/inter_first_blast/filtered_blast_results.csv" | sort -k1,1 -k2,2n | bedtools merge -i - > "'"$OUTPUT_DIR"'/inter_first_blast/${subject}.bed"'
 
 echo "✅ Chromosomal BED files created for all subjects in parallel."
 
@@ -173,14 +173,14 @@ if [ "$num_genomes" -lt 2 ]; then
     if [[ -f "$OUTPUT_DIR/inter_first_blast/all_extracted_regions.fasta" ]]; then
         cat "$OUTPUT_DIR/inter_first_blast/all_extracted_regions.fasta" >> "$FINAL_FASTA"
     fi
-    # Filter sequences longer than 200 bp
+    # Filter sequences 
     awk -v min_len="$MIN_SEQ_LENGTH" -v max_len="$MAX_SEQ_LENGTH" '/^>/ {if (seq && length(seq) >= min_len && length(seq) <= max_len) print header " size=" length(seq) " bp\n" seq; header=$0; seq=""} /^[^>]/ {seq = seq $0} END {if (seq && length(seq) >= min_len && length(seq) <= max_len) print header " size=" length(seq) " bp\n" seq}' "$FINAL_FASTA" > "$OUTPUT_DIR/unique_genomic_regions.fasta"
 else
     echo "Multiple genome BED file found ($num_genomes)."
     echo "Processing multiintersect analysis..."
     # Step 5: Perform bedtools multiintersect
-    ls "$OUTPUT_DIR"/inter_conserved_blast/genome_bed/*.bed > bedlist.txt
-    bedtools multiinter -i $(cat bedlist.txt)/*.bed > "$OUTPUT_DIR/inter_first_blast/core_genome_raw.bed"
+    ls "$OUTPUT_DIR"/inter_first_blast/genome_bed/*.bed > bedlist_unique.txt
+    bedtools multiinter -i $(cat bedlist_unique.txt)/*.bed > "$OUTPUT_DIR/inter_first_blast/core_genome_raw.bed"
     echo "The aligned regions intersection was completed"
 
     # Extract only the first three columns
@@ -188,7 +188,6 @@ else
 
     # Step 6: Subtract unique regions
     export OUTPUT_DIR
-    # For the single reference genome
     bedtools subtract -a "$OUTPUT_DIR/inter_master_bed_FAI/$(basename "$core_genome_fasta").bed" -b "$OUTPUT_DIR/inter_first_blast/core_genome.bed" > "$OUTPUT_DIR/inter_master_bed_FAI/Trimmed_unique_regions_$(basename "$core_genome_fasta").bed"
 
     # Check if the BED file from the third module exists
@@ -239,7 +238,7 @@ if [[ "$shared_region" == "yes" ]]; then
         awk -F'\t' '{print $2}' "$OUTPUT_DIR/inter_conserved_blast/filtered_blast_conserved_results.csv" | sort -u | \
         parallel -j "$THREADS" '
             subject={};
-            awk -v subj="$subject" "BEGIN{OFS=\"\t\"} (\$2==subj){print \$1, (\$5<\$6?\$5:\$6), (\$5>\$6?\$5:\$6)}" \
+            awk -v subj="$subject" "BEGIN{OFS=\"\t\"} (\$2==subj){print \$1, (\$5<\$6?\$5:\$6)-1, (\$5>\$6?\$5:\$6)}" \
             "$OUTPUT_DIR/inter_conserved_blast/filtered_blast_conserved_results.csv" | \
             sort -k1,1 -k2,2n | bedtools merge -i - > "$OUTPUT_DIR/inter_conserved_blast/${subject}.bed"
         '
@@ -301,9 +300,8 @@ if [[ "$shared_region" == "yes" ]]; then
         else
             echo "Multiple BED files found ($num_bed_files). Proceeding with further processing..."
             # Step 3: Perform bedtools multiintersect
-            ls "$OUTPUT_DIR"/inter_conserved_blast/genome_bed/*.bed > bedlist.txt
-            bedtools multiinter -i $(cat bedlist.txt)/*.bed -header > "$OUTPUT_DIR/inter_first_blast/core_genome_raw.bed"
-            bedtools multiinter -i "$OUTPUT_DIR/inter_conserved_blast/genome_bed"/*.bed -header > "$OUTPUT_DIR/inter_conserved_blast/conserved_regions_raw.bed"
+            ls "$OUTPUT_DIR"/inter_conserved_blast/genome_bed/*.bed > bedlist_shared.txt
+            bedtools multiinter -i $(cat bedlist_shared.txt)/*.bed -header > "$OUTPUT_DIR/inter_conserved_blast/conserved_regions_raw.bed"
             echo "The conserved regions intersection was completed"
 
             CONSRV_RAW="$OUTPUT_DIR/inter_conserved_blast/conserved_regions_raw.bed"
