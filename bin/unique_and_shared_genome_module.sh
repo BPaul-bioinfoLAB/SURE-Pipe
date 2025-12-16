@@ -108,13 +108,13 @@ parallel -j "$THREADS" process_genome ::: "$core_genome_fasta" "${neighbour_grou
 echo "FAI & BED files generated for all genomes."
 
 # Step 2: Filter BLAST results (retain only columns 1, 2, 4, 5, 6, 7)
-awk '{print $1, $2, $3, $4, $5, $6, $7, $8}' OFS="\t" "$core_unique_out" > "$OUTPUT_DIR/inter_first_blast/filtered_blast_results.csv"
+awk 'BEGIN{FS=OFS="\t"} {print $1, $2, $4, $5, $6, $7, $8, $9}' "$core_unique_out" > "$OUTPUT_DIR/inter_first_blast/filtered_blast_results.tsv"
 
 # Step 3: Create BED files for filtered results
-awk '{print $2}' "$OUTPUT_DIR/inter_first_blast/filtered_blast_results.csv" | sort | uniq | \
+awk '{print $2}' "$OUTPUT_DIR/inter_first_blast/filtered_blast_results.tsv" | sort | uniq | \
 parallel -j "$THREADS" '
   subject={} 
-  awk -v subj="$subject" "BEGIN {OFS=\"\t\"} (\$2==subj){print \$1, (\$5<\$6?\$5:\$6)-1, (\$5>\$6?\$5:\$6)}" "'"$OUTPUT_DIR"'/inter_first_blast/filtered_blast_results.csv" | sort -k1,1 -k2,2n | bedtools merge -i - > "'"$OUTPUT_DIR"'/inter_first_blast/${subject}.bed"'
+  awk -v subj="$subject" "BEGIN {OFS=\"\t\"} (\$2==subj){print \$1, (\$5<\$6?\$5:\$6)-1, (\$5>\$6?\$5:\$6)}" "'"$OUTPUT_DIR"'/inter_first_blast/filtered_blast_results.tsv" | sort -k1,1 -k2,2n | bedtools merge -i - > "'"$OUTPUT_DIR"'/inter_first_blast/${subject}.bed"'
 
 echo "✅ Chromosomal BED files created for all subjects in parallel."
 
