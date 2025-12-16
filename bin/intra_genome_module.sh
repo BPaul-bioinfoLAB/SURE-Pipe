@@ -108,7 +108,7 @@ run_pairwise_blast() {
 
     awk -v cg_ident="$core_genome_ident" '($4 > 0 && $3 > cg_ident )' "$blast_out" > "$filtered_out"
 
-    awk -v subj="$subject_basename" 'BEGIN {OFS="\t"} {print $1, ($5<=$6?$5:$6), ($5>=$6?$5:$6), subj}' "$filtered_out" \
+    awk -v subj="$subject_basename" 'BEGIN {OFS="\t"} {print $1, ($5<=$6?$5:$6)-1, ($5>=$6?$5:$6), subj}' "$filtered_out" \
         | sort -k1,1 -k2,2n > "$outdir/intra_first_blast/genome_bed/${subject_basename}.bed"
 }
 
@@ -133,7 +133,7 @@ if [ "$num_genomes" -lt 2 ]; then
         echo "Accessory genome analysis enabled..."
         # Extract common regions from target_ref
         subject_BED_basename=$(basename "$OUTPUT_DIR"/intra_first_blast/genome_bed/*.bed .bed)
-        awk 'BEGIN {OFS="\t"} {print $1, ($5<=$6?$5:$6), ($5>=$6?$5:$6)}' "$OUTPUT_DIR"/intra_first_blast/*_filtered.csv | sort -k1,1 -k2,2n  > "$OUTPUT_DIR/intra_2nd_blast/genome_bed/${subject_BED_basename}.bed"
+        awk 'BEGIN {OFS="\t"} {print $1, ($5<=$6?$5:$6)-1, ($5>=$6?$5:$6)}' "$OUTPUT_DIR"/intra_first_blast/*_filtered.csv | sort -k1,1 -k2,2n  > "$OUTPUT_DIR/intra_2nd_blast/genome_bed/${subject_BED_basename}.bed"
        
         for genome in "${target_group[@]}"; do
             bedtools subtract -a "$OUTPUT_DIR/intra_master_bed_FAI/$(basename "$genome").bed" -b "$OUTPUT_DIR/intra_2nd_blast/genome_bed/${subject_BED_basename}.bed" > "$OUTPUT_DIR/intra_2nd_blast/Unique_$(basename "$genome").bed"
@@ -186,7 +186,7 @@ else
            awk '($3 > 98)' "$blast_out" > "$filtered_out"
 
            # Convert to BED format
-           awk -v subj="$subject_basename" 'BEGIN {OFS="\t"} {print $2, ($7 < $8 ? $7 : $8), ($7 > $8 ? $7 : $8)}' "$filtered_out" | sort -k1,1 -k2,2n | bedtools merge > "$outdir/intra_2nd_blast/genome_bed/${subject_basename}.bed"
+           awk -v subj="$subject_basename" 'BEGIN {OFS="\t"} {print $2, ($7 < $8 ? $7 : $8)-1, ($7 > $8 ? $7 : $8)}' "$filtered_out" | sort -k1,1 -k2,2n | bedtools merge > "$outdir/intra_2nd_blast/genome_bed/${subject_basename}.bed"
         }
 
         export -f run_pairwise_blast_2
@@ -234,4 +234,3 @@ else
         exit 0
     fi
 fi
-
