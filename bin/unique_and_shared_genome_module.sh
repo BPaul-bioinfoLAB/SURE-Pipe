@@ -174,7 +174,9 @@ if [ "$num_genomes" -lt 2 ]; then
         cat "$OUTPUT_DIR/inter_first_blast/all_extracted_regions.fasta" >> "$FINAL_FASTA"
     fi
     # Filter sequences 
-    awk -v min_len="$MIN_SEQ_LENGTH" -v max_len="$MAX_SEQ_LENGTH" '/^>/ {if (seq && length(seq) >= min_len && length(seq) <= max_len) print header " size=" length(seq) " bp\n" seq; header=$0; seq=""} /^[^>]/ {seq = seq $0} END {if (seq && length(seq) >= min_len && length(seq) <= max_len) print header " size=" length(seq) " bp\n" seq}' "$FINAL_FASTA" > "$OUTPUT_DIR/unique_genomic_regions.fasta"
+    awk -v min_len="$MIN_SEQ_LENGTH" -v max_len="$MAX_SEQ_LENGTH" 'BEGIN{OFS=""} /^>/{if(seq && length(seq)>=min_len && length(seq)<=max_len){abs_s=ps+ss; abs_e=ps+se; print ">"chr":"abs_s"-"abs_e" size="length(seq)" bp\n"seq} split($0,a,"[:>-]"); chr=a[2]; ps=a[3]; ss=a[5]; se=a[6]; seq=""; next} {seq=seq$0} END{if(seq && length(seq)>=min_len && length(seq)<=max_len){abs_s=ps+ss; abs_e=ps+se; print ">"chr":"abs_s"-"abs_e" size="length(seq)" bp\n"seq}}' "$FINAL_FASTA" > "$OUTPUT_DIR/unique_genomic_regions.fasta"
+
+
 else
     echo "Multiple genome BED file found ($num_genomes)."
     echo "Processing multiintersect analysis..."
@@ -221,7 +223,7 @@ else
     fi
 
     # Filter sequences longer than 200 bp
-    awk -v min_len="$MIN_SEQ_LENGTH" -v max_len="$MAX_SEQ_LENGTH" '/^>/ {if (seq && length(seq) >= min_len && length(seq) <= max_len) print header " size=" length(seq) " bp\n" seq; header=$0; seq=""} /^[^>]/ {seq = seq $0} END {if (seq && length(seq) >= min_len && length(seq) <= max_len) print header " size=" length(seq) " bp\n" seq}' $FINAL_FASTA > "$OUTPUT_DIR/unique_genomic_regions.fasta"
+    awk -v min_len="$MIN_SEQ_LENGTH" -v max_len="$MAX_SEQ_LENGTH" 'BEGIN{OFS=""} /^>/{if(seq && length(seq)>=min_len && length(seq)<=max_len){abs_s=ps+ss; abs_e=ps+se; print ">"chr":"abs_s"-"abs_e" size="length(seq)" bp\n"seq} split($0,a,"[:>-]"); chr=a[2]; ps=a[3]; ss=a[5]; se=a[6]; seq=""; next} {seq=seq$0} END{if(seq && length(seq)>=min_len && length(seq)<=max_len){abs_s=ps+ss; abs_e=ps+se; print ">"chr":"abs_s"-"abs_e" size="length(seq)" bp\n"seq}}' "$FINAL_FASTA" > "$OUTPUT_DIR/unique_genomic_regions.fasta"
 fi
 
 # Step for conserved: Check if core_shared_genome exists and is non-empty
