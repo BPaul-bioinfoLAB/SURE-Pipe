@@ -108,7 +108,7 @@ parallel -j "$THREADS" process_genome ::: "$core_genome_fasta" "${neighbour_grou
 echo "FAI & BED files generated for all genomes."
 
 # Step 2: Filter BLAST results (retain only columns 1, 2, 4, 5, 6, 7)
-awk '($4 > 0) {print $1, $2, $3, $4, $5, $6, $7, $8}' OFS="\t" "$core_unique_out" > "$OUTPUT_DIR/inter_first_blast/filtered_blast_results.csv"
+awk '{print $1, $2, $4, $5, $6, $7, $8}' OFS="\t" "$core_unique_out" > "$OUTPUT_DIR/inter_first_blast/filtered_blast_results.csv"
 
 # Step 3: Create BED files for filtered results
 awk '{print $2}' "$OUTPUT_DIR/inter_first_blast/filtered_blast_results.csv" | sort | uniq | \
