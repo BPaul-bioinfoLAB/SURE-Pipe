@@ -101,6 +101,8 @@ SURE-Pipe is designed to flexibly handle diverse genome architectures and input 
 	│   ├── intra_genome_module.sh
 	│   ├── pairwise_comparison.sh
 	│   └── unique_and_shared_genome_module.sh
+	├── completion
+	│   ├── pairwise_comparison.sh
 	├── data
 	│   ├── non_target
 	│   ├── pair
