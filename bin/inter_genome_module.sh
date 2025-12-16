@@ -71,33 +71,37 @@ fi
 echo "📊 Found genome files:"
 echo "$genome_files"
 
-# Step 4: Run BLAST
-run_blast_single() {
-    local subject="$1"
-    local core_genome_file="$2"
-    local outdir="$3"
 
-    local subj_basename=$(basename "$subject")
-    local out_file="$outdir/blast_${subj_basename}.tsv"
+# -----------------------------
+# STEP 4: Build BLAST database
+# -----------------------------
+echo "🧬 Creating combined BLAST FASTA..."
+cat $genome_files > "$OUTPUT_DIR/inter_genome_db.fasta"
 
-    blastn -query "$core_genome_file" -subject "$subject" -out "$out_file" \
-        -outfmt "7 qseqid sseqid stitle qcovs pident qstart qend sstart send length evalue bitscore" \
-        -task megablast -subject_besthit
+echo "🧬 Building BLAST database..."
+makeblastdb \
+    -in "$OUTPUT_DIR/inter_genome_db.fasta" \
+    -dbtype nucl \
+    -out "$OUTPUT_DIR/inter_genome_db"
 
-    echo "✅ BLAST completed for $subj_basename"
-}
 
-export -f run_blast_single
-export core_genome_file
-export OUTPUT_DIR
+# -----------------------------
+# STEP 5: Run BLAST
+# -----------------------------
+echo "🚀 Running BLAST against combined database..."
 
-echo "$genome_files" | tr ' ' '\n' | parallel -j "$THREADS" run_blast_single {} "$core_genome_file" "$OUTPUT_DIR"
+blastn \
+    -query "$core_genome_file" \
+    -db "$OUTPUT_DIR/inter_genome_db" \
+    -out "$OUTPUT_DIR/merged_blast.tsv" \
+    -outfmt "7 qseqid sseqid stitle qcovs pident qstart qend sstart send length evalue bitscore" \
+    -task megablast \
+    -num_threads "$THREADS"
 
-echo "🔹 All BLAST runs completed."
-
-# Step 5: Merge BLAST outputs
+# -----------------------------
+# STEP 6: Extract unaligned core regions
+# -----------------------------
 merged_output="$OUTPUT_DIR/merged_blast.tsv"
-awk 'FNR>0{print}' "$OUTPUT_DIR"/blast_*.tsv > "$merged_output"
 
 awk '/^# Query:/ {split($3,a, "[:-]"); chr=a[1]; start=a[2]-1; end=a[3]; name=$3} /^# 0 hits found/ {print chr "\t" start "\t" end "\t" name}' "$merged_output" > "$OUTPUT_DIR/unaligned_core_bed_file.bed"
 
