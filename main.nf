@@ -1,5 +1,6 @@
 #!/usr/bin/env nextflow
 params.debug_mode = false // default
+params.keep_work = false // default
 
 nextflow.enable.dsl = 2
 
@@ -114,8 +115,8 @@ def helpMessage() {
       --core_genome_ident		core_genome regions's percentage of identity in intra comparison (default: $params.core_genome_ident)
       --unique_qcov_op		choices=ops.keys(), help="Operator for unique region query coverage . (Choices: >, <, >=, <=; default:$params.unique_qcov_op)
       --unique_ident_op		choices=ops.keys(), help="Operator for unique region identity . (Choices: >, <, >=, <=; default:$params.unique_ident_op)
-      --shared_qcov_op		choices=ops.keys(), help="Operator for shared region query coverage. (Choices: >, <, >=, <=, ==, !=; default:$params.shared_qcov_op)
-      --shared_ident_op		choices=ops.keys(), help="Operator for shared region identity. (Choices: >, <, >=, <=, ==, !=; default:$params.shared_ident_op)
+      --shared_qcov_op		choices=ops.keys(), help="Operator for shared region query coverage (will be inverted internally). (Choices: >, <, >=, <=, ==, !=; default:$params.shared_qcov_op)
+      --shared_ident_op		choices=ops.keys(), help="Operator for shared region identity (will be inverted internally). (Choices: >, <, >=, <=, ==, !=; default:$params.shared_ident_op)
       --shared_qcov_mode    	filtering option for shared regions qcov is in interval (ex. 80,70; 'inside' interval or 'outside' interval)
       --shared_ident_mode   	filtering option for shared regions ident is in interval (ex. 80,70; 'inside' interval or 'outside' interval)	
       --accessory_unique    	Extract accessory & unique regions for genomes in target_group: 'yes' or 'no' (default: $params.accessory_unique)
@@ -133,6 +134,9 @@ def helpMessage() {
 
     Nextflow options:
       -resume                   	Resume a previous run
+      -debug_mode			Degugging mode (default: $params.debug_mode)
+      -keep_work			Removing/keeping work folder (default: $params.keep_work)
+      
     """.stripIndent()
 }
 
@@ -323,4 +327,14 @@ workflow.onComplete {
     log.info "Pipeline completed at: $workflow.complete"
     log.info "Execution status: ${workflow.success ? 'OK' : 'Failed'}"
     log.info "Execution duration: $workflow.duration"
+    
+    if (workflow.success && !params.keep_work) {
+        log.info "Auto-cleanup enabled: removing work directory"
+        def workDir = workflow.workDir
+        if (workDir && workDir.exists()) {
+            workDir.deleteDir()
+        }
+    } else {
+        log.info "Keeping work directory (keep_work=${params.keep_work})"
+    }
 }
