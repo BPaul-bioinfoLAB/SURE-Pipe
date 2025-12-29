@@ -159,6 +159,15 @@ EOF
     for f in ~/.bash_completion.d/*; do
         [ -f "$f" ] && source "$f"
     done
+fi
+# -------------------------------
+# Activate bashrc for current session (optional)
+# -------------------------------
+if [[ -n "${BASH_VERSION:-}" ]]; then
+    echo "🔄 Reloading ~/.bashrc to enable autocompletion..."
+    source ~/.bashrc || true
 
+    echo "ℹ️ Bash completion installed."
+    echo "➡️ Open a new terminal or run: source ~/.bashrc"
     echo "✅ Autocompletion installed and activated"
 fi
