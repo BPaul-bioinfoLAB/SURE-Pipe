@@ -67,11 +67,11 @@ _surepipe_complete() {
     # -------------------------------
     # File completion
     # -------------------------------
-    if [[ " $file_params " == *" $prev "* ]]; then
+    if [[ " $file_params " == *" $prev "* || "$cur" == */* ]]; then
         COMPREPLY=( $(compgen -f -- "$cur") )
         return 0
     fi
-
+    
     # -------------------------------
     # --param=value completion
     # -------------------------------
