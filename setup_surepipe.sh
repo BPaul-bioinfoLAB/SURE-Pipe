@@ -119,6 +119,23 @@ if [ ! -f "$SYMLINK_PATH" ]; then
 else
     echo "🔗 Symlink already exists at $SYMLINK_PATH"
 fi
+# -------------------------------
+# Ensure bash-completion is enabled EARLY (WSL-safe)
+# -------------------------------
+if [ -f /etc/bash_completion ]; then
+    if ! grep -q "/etc/bash_completion" "$HOME/.bashrc"; then
+        tmpfile="$(mktemp)"
+        cat <<'EOF' > "$tmpfile"
+# Enable bash completion (required for SURE-Pipe)
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+fi
+
+EOF
+        cat "$HOME/.bashrc" >> "$tmpfile"
+        mv "$tmpfile" "$HOME/.bashrc"
+    fi
+fi
 
 # -------------------------------
 # Install Bash Autocompletion
