@@ -183,7 +183,7 @@ else
            blastn -query "$query" -subject "$subject" -out "$blast_out" -outfmt "6 qseqid sseqid pident length qstart qend sstart send qcovs qcovhsp"
 
            # Filter hits:  >98% identity
-           awk '($3 > 98)' "$blast_out" > "$filtered_out"
+           awk '($3 > 0)' "$blast_out" > "$filtered_out"
 
            # Convert to BED format
            awk -v subj="$subject_basename" 'BEGIN {OFS="\t"} {print $2, ($7 < $8 ? $7 : $8)-1, ($7 > $8 ? $7 : $8)}' "$filtered_out" | sort -k1,1 -k2,2n | bedtools merge > "$outdir/intra_2nd_blast/genome_bed/${subject_basename}.bed"
