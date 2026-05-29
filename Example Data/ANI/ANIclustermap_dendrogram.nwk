@@ -1,0 +1,1 @@
+(((target_genome_4:0.15,target_genome_3:0.15):0.04,((target_genome_1:0.10,target_genome_5:0.10):0.03,target_genome_2:0.13):0.06):0.15,(((non_target_genome_2:0.08,non_target_genome_5:0.08):0.05,non_target_genome_4:0.13):0.05,(non_target_genome_3:0.09,non_target_genome_1:0.09):0.09):0.16);
