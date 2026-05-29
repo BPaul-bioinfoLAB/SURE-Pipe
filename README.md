@@ -1,5 +1,5 @@
-[![Release](https://img.shields.io/badge/release-v1.1-blue.svg)](https://github.com/BPaul-bioinfoLAB/SURE-Pipe/releases/tag/v1.1)
-[![Downloads](https://img.shields.io/github/downloads/BPaul-bioinfoLAB/SURE-Pipe/total?logo=github)](https://github.com/BPaul-bioinfoLAB/SURE-Pipe/releases/download/v1.1/SURE-Pipe-1.1.tar.gz)
+[![Release](https://img.shields.io/badge/release-v1.1-blue.svg)](https://github.com/BPaul-bioinfoLAB/SURE-Pipe/releases/tag/v.1.1)
+[![Downloads](https://img.shields.io/github/downloads/BPaul-bioinfoLAB/SURE-Pipe/total?logo=github)](https://github.com/BPaul-bioinfoLAB/SURE-Pipe/releases/download/v.1.1/SURE-Pipe-1.1.tar.gz)
 	
 	"""
 	============================================================================================================================================
