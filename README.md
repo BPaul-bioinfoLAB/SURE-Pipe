@@ -1,5 +1,5 @@
-[![Release](https://img.shields.io/badge/release-v1.0.0-blue.svg)](https://github.com/BPaul-bioinfoLAB/SURE-Pipe/releases/tag/v1.0.0)
-[![Downloads](https://img.shields.io/github/downloads/BPaul-bioinfoLAB/SURE-Pipe/total?logo=github)](https://github.com/BPaul-bioinfoLAB/SURE-Pipe/releases/download/v1.0.0/SURE-Pipe-1.0.tar.gz)
+[![Release](https://img.shields.io/badge/release-v1.1-blue.svg)](https://github.com/BPaul-bioinfoLAB/SURE-Pipe/releases/tag/v1.1)
+[![Downloads](https://img.shields.io/github/downloads/BPaul-bioinfoLAB/SURE-Pipe/total?logo=github)](https://github.com/BPaul-bioinfoLAB/SURE-Pipe/releases/download/v1.1/SURE-Pipe-1.1.tar.gz)
 	
 	"""
 	============================================================================================================================================
@@ -93,6 +93,61 @@ SURE-Pipe is designed to flexibly handle diverse genome architectures and input 
 
   🔹 Input formats: Accepts common FASTA extensions (.fa, .fasta, .fna, .ffn, .frn). Each genome should be supplied as a separate FASTA file (single- or multi-FASTA), regardless of chromosome number or plasmid content. Should keep the filenames & folder names without space, (). instead use underscore(_)
   🔹 Verification: Always check the shared & unique regions by doing BLAST against curated genome databases before proceeding downstream analysis
+
+## Parameter Selection Guidelines
+## Core Genome Identity (--core_genome_ident)
+
+🔹This parameter should be selected based on the Average Nucleotide Identity (ANI) within the target genome cluster.
+
+## Recommended Strategy
+
+🔹Use the lowest ANI value observed among all target genomes as the baseline threshold.
+
+## Why?
+
+🔹Using the lower ANI boundary captures a larger and more representative conserved core genome, improving downstream discovery of:
+
+robust unique regions,
+conserved shared regions,
+and diagnostic-quality markers.
+
+Overly strict thresholds may fragment the core genome and exclude biologically valid orthologous regions.
+
+## Unique Region Identity (--unique_ident)
+	Recommended Default --unique_ident 85
+
+🔹An 85% identity cutoff provides the best balance between: 
+			specificity,
+			marker length,
+			and diagnostic robustness.
+🔹Lower thresholds generate overly short hyper-variable regions, while thresholds above 85% increase the risk of cross-reactivity with non-target genomes. A minimum ~15% sequence divergence (<85% identity) helps reduce false-positive primer binding.
+
+## Shared Region Identity (`--shared_ident`)
+
+🔹This parameter controls homologous region detection between target and neighboring genome groups.
+
+## SURE-Pipe supports two directional modes:
+
+| Mode | Meaning       | Biological Interpretation                |
+| ---- | ------------- | ---------------------------------------- |
+| `gt` | `> threshold` | Detect highly similar homologous regions |
+| `lt` | `< threshold` | Detect divergent homologous regions      |
+
+### Recommended Usage
+
+## Detect highly conserved orthologous blocks shared between genome groups.
+	--shared_ident 95 --shared_operator gt
+## Detect divergent homologous regions shared between genome groups.
+	--shared_ident 95 --shared_operator lt
+
+The `gt` mode enriches for highly conserved genomic structures while filtering fragmented low-identity background alignments.
+The `lt` mode captures more divergent homologous components and enables flexible exclusion of highly conserved non-target regions.
+
+## Biological Design Principle
+
+🔹SURE-Pipe identifies conserved core regions within the target species and compares them against neighboring genomes. Shared or conserved regions above the selected thresholds are removed, enriching for biologically stable discriminatory markers.
+
+🔹To reduce artifacts from horizontal gene transfer, plasmids, and accessory genome variation, the workflow requires multiple genomes per target species. Only regions consistently conserved across independent genomes are retained.
 
 ## Project Directory structure
 	SURE-Pipe
