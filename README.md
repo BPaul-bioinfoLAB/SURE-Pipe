@@ -278,9 +278,7 @@ The `lt` mode captures more divergent homologous components and enables flexible
       --unique_qcov_op		    choices=ops.keys(), help="Operator for unique region query coverage . (Choices: >, <, >=, <=; default:$params.unique_qcov_op)
       --unique_ident_op		    choices=ops.keys(), help="Operator for unique region identity . (Choices: >, <, >=, <=; default:$params.unique_ident_op)
       --shared_qcov_op		    choices=ops.keys(), help="Operator for shared region query coverage . (Choices: >, <, >=, <=, ==, !=; default:$params.shared_qcov_op)
-      --shared_ident_op		    choices=ops.keys(), help="Operator for shared region identity . (Choices: >, <, >=, <=, ==, !=; default:$params.shared_ident_op)
-      --shared_qcov_mode    	filtering option for shared regions qcov is in interval (ex. 80,70; 'inside' interval or 'outside' interval)
-      --shared_ident_mode   	filtering option for shared regions ident is in interval (ex. 80,70; 'inside' interval or 'outside' interval)	
+      --shared_ident_op		    choices=ops.keys(), help="Operator for shared region identity . (Choices: >, <, >=, <=, ==, !=; default:$params.shared_ident_op)	
       --accessory_unique    	Extract accessory & unique regions for genomes in target_group: 'yes' or 'no' (default: $params.accessory_unique)
     
     Pairwise Mode Options:
