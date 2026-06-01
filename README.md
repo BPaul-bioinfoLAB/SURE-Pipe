@@ -159,23 +159,25 @@ The `lt` mode captures more divergent homologous components and enables flexible
 	│   └── unique_and_shared_genome_module.sh
 	├── completion
 	│   ├── surepipe.bash
-	├── data
-	│   ├── non_target
-	│   ├── pair
-	│   └── target
+	├── Example Data
+	│   ├── Markers_info_file.txt
+	│   ├── ANI
+	│   |   ├── ANIclustermap.png
+	|	|	├── ANIclustermap.svg
+	|	|	├── ANIclustermap_dendrogram.nwk
+	|	|	├── ANIclustermap_matrix.tsv
+	│   ├── Non-target genomes
 	│   │   ├── non_target_genome_1.fasta
 	│   │   ├── non_target_genome_2.fasta
 	│   │   ├── non_target_genome_3.fasta
 	│   │   ├── non_target_genome_4.fasta
 	│   │   └── non_target_genome_5.fasta
-	│   ├── pair
-	│   │   ├── GCA_029857465.2_Bacillus_licheniformis_strain_DSM_26543.fa
-	│   │   └── GCA_034478925.1_Bacillus_licheniformis_strain_ATCC_14580.fa
-	│   └── target
+	│   └── Target genomes
 	│       ├── target_genome_1.fasta
 	│       ├── target_genome_2.fasta
 	│       ├── target_genome_3.fasta
-	│       └── target_genome_4.fasta
+	|		├── target_genome_4.fasta
+	│       └── target_genome_5.fasta
 	├── env
 	│   └── environment.yml
 	├── LICENSE
